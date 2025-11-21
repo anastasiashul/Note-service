@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate backend structure
+        run: |
+          echo " Проверяем структуру проекта..."
+          [ -f "backend/app.py" ] && echo " app.py найден" || echo " app.py не найден"
+          [ -f "backend/requirements.txt" ] && echo " requirements.txt найден" || echo " requirements.txt не найден"
+          [ -d "backend/tests" ] && echo " папка tests найдена" || echo " папка tests не найдена"
+
+      - name: Check Python syntax
+        run: |
+          cd backend
+          python -m py_compile app.py
+          echo " Синтаксис Python корректен"
