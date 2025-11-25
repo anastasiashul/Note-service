@@ -1,13 +1,17 @@
-name: CI
+name: Backend CI
 
 on:
   push:
     branches: [ main ]
   pull_request:
+    branches: [main]
 
 jobs:
   validate:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
 
     steps:
       - name: Checkout code
@@ -17,16 +21,30 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          
+      - name: Install dependencies
+        run: |
+          pip install pytest
+          pip install -r requirements.txt
 
       - name: Validate backend structure
         run: |
           echo " Проверяем структуру проекта..."
-          [ -f "backend/app.py" ] && echo " app.py найден" || echo " app.py не найден"
-          [ -f "backend/requirements.txt" ] && echo " requirements.txt найден" || echo " requirements.txt не найден"
-          [ -d "backend/tests" ] && echo " папка tests найдена" || echo " папка tests не найдена"
+          [ -f "app.py" ] && echo " app.py найден" || {echo " app.py не найден"; exit 1;} 
+          [ -f "requirements.txt" ] && echo " requirements.txt найден" || echo " requirements.txt не найден"
+          [ -d "tests" ] && echo " папка tests найдена" || echo " папка tests не найдена"
 
       - name: Check Python syntax
         run: |
-          cd backend
+          
           python -m py_compile app.py
           echo " Синтаксис Python корректен"
+
+      - name: Run basic tests
+        run: |
+          if [ -d "tests" ]; then
+            python -m pytest tests/ -v
+          else
+            echo "Тесты не найдены"
+            exit 1
+          fi
