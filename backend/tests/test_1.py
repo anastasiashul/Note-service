@@ -2,11 +2,9 @@ def test_project_structure():
     """Тест структуры проекта"""
     import os
     
-    
     required_files = [
-        'backend/app.py',
-        'backend/requirements.txt'
-        
+        'app.py',
+        'requirements.txt'
         
     ]
     
