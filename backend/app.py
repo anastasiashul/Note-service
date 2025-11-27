@@ -18,7 +18,6 @@ def init_database():
     if not os.path.exists(DB_PATH):
         initial_data = {
             "tasks": [],
-            "notes": [],
             "labels": [
                 {"id": 1, "name": "Учеба", "color": "#a790f9"},
                 {"id": 2, "name": "Работа", "color": "#de95eb"},
@@ -35,7 +34,7 @@ def load_from_db():
         with open(DB_PATH, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        return {"tasks": [], "notes": [], "labels": []}
+        return {"tasks": [], "labels": []}
 
 def save_to_db(data):
     """Сохранение данных в JSON"""
@@ -45,7 +44,7 @@ def save_to_db(data):
 # ==================== HEALTH CHECK ====================
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    return jsonify({"status": "OK", "message": "Note App API is running!"})
+    return jsonify({"status": "OK", "message": "Task Manager API is running!"})
 
 # ==================== TASKS API ====================
 @app.route('/api/tasks', methods=['GET'])
@@ -131,37 +130,6 @@ def delete_task(task_id):
     else:
         return jsonify({"error": "Task not found"}), 404
 
-# ==================== NOTES API ====================
-@app.route('/api/notes', methods=['GET'])
-def get_notes():
-    """Получение всех заметок"""
-    data = load_from_db()
-    return jsonify(data['notes'])
-
-@app.route('/api/notes', methods=['POST'])
-def create_note():
-    """Создание новой заметки"""
-    data = load_from_db()
-    note_data = request.json
-    
-    note_ids = [note.get('id', 0) for note in data['notes']]
-    new_id = max(note_ids) + 1 if note_ids else 1
-    
-    new_note = {
-        "id": new_id,
-        "title": note_data.get('title', ''),
-        "content": note_data.get('content', ''),
-        "createdAt": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }
-    
-    if not new_note['title'] or not new_note['content']:
-        return jsonify({"error": "Title and content are required"}), 400
-    
-    data['notes'].append(new_note)
-    save_to_db(data)
-    
-    return jsonify(new_note), 201
-
 # ==================== LABELS API ====================
 @app.route('/api/labels', methods=['GET'])
 def get_labels():
@@ -169,10 +137,51 @@ def get_labels():
     data = load_from_db()
     return jsonify(data['labels'])
 
+@app.route('/api/labels', methods=['POST'])
+def create_label():
+    """Создание новой метки"""
+    data = load_from_db()
+    label_data = request.json
+    
+    label_ids = [label.get('id', 0) for label in data['labels']]
+    new_id = max(label_ids) + 1 if label_ids else 1
+    
+    new_label = {
+        "id": new_id,
+        "name": label_data.get('name', ''),
+        "color": label_data.get('color', '#a790f9')
+    }
+    
+    if not new_label['name']:
+        return jsonify({"error": "Label name is required"}), 400
+    
+    data['labels'].append(new_label)
+    save_to_db(data)
+    
+    return jsonify(new_label), 201
+
+# ==================== ERROR HANDLERS ====================
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"error": "Resource not found"}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({"error": "Internal server error"}), 500
+
 if __name__ == '__main__':
     init_database()
-    print("🚀 Note App API server starting...")
+    print("🚀 Task Manager API server starting...")
     print("📊 Database initialized at:", DB_PATH)
     print("🌐 Server running on: http://localhost:5000")
     print("🔍 Health check: http://localhost:5000/api/health")
+    print("📋 Available endpoints:")
+    print("   GET  /api/health")
+    print("   GET  /api/tasks")
+    print("   POST /api/tasks")
+    print("   GET  /api/tasks/{id}")
+    print("   PUT  /api/tasks/{id}")
+    print("   DELETE /api/tasks/{id}")
+    print("   GET  /api/labels")
+    print("   POST /api/labels")
     app.run(debug=True, host='0.0.0.0', port=5000)
