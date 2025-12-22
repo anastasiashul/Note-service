@@ -61,7 +61,7 @@ jobs:
       - name: Run tests
         run: |
           if [ -d "tests" ]; then
-            python -m pytest tests/ -v
+            python -m pytest tests/ -v -s
           else
             echo "Тесты не найдены"
             exit 1
