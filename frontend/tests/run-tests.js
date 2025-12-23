@@ -1,31 +1,13 @@
-
-const fs = require('fs');
-const path = require('path');
-
 console.log('Starting frontend tests...');
+const basicTests = require('./basic-tests.js');
 
-try {
-  
-  const requiredFiles = [
-    'index.html',
-    'style.css', 
-    'app.js'
-  ];
+const structureResult =basicTests.test_on_structure();
 
-  requiredFiles.forEach(file => {
-    const filePath = path.join(__dirname, '..', file);
-    if (fs.existsSync(filePath)) {
-      console.log(`${file} exists`);
-    } else {
-      console.log(`${file} not found`);
-      
-    }
-  });
-
-  console.log('Frontend structure check completed!');
-  process.exit(0); 
-
-} catch (error) {
-  console.error('Test failed:', error.message);
-  process.exit(1); 
+if (structureResult) {
+    console.log('\n All frontend tests completed!');
+    process.exit(0);
+}
+else {
+    console.log('Some tests failed');
+    process.exit(1);
 }
