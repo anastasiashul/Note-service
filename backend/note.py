@@ -17,7 +17,6 @@ class Note:
         self.content = content
         self.status = status
         self.labels = labels or []
-        # Если created_at - строка, оставляем как есть, иначе создаем новую дату
         if isinstance(created_at, str):
             self.created_at = created_at
         else:
@@ -35,6 +34,7 @@ class Note:
             'content': self.content,
             'status': self.status,
             'labels': self.labels,
-            'created_at': self.created_at,  # Убираем .isoformat()
-            'updated_at': self.updated_at   # Убираем .isoformat()
+            'created_at': self.created_at,  
+            'updated_at': self.updated_at   
+
         }
