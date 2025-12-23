@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Note App</title>
     <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
@@ -18,9 +19,22 @@
             + Добавить заметку
           </button>
         </div>
+
+        <div class="filters">
+          <select id="filterStatus" class="filter-select">
+            <option value="">Все статусы</option>
+            <option value="active">Активные</option>
+            <option value="completed">Выполненные</option>
+            <option value="archived">В архиве</option>
+          </select>
+
+          <select id="filterLabel" class="filter-select">
+            <option value="">Все метки</option>
+          </select>
         </div>
       </div>
 
+      <!-- Форма добавления/редактирования заметки -->
       <div id="noteForm" class="note-form hidden">
         <div class="form-header">
           <h2 id="formTitle">Новая заметка</h2>
@@ -33,7 +47,8 @@
             type="text"
             id="noteTitle"
             placeholder="Введите заголовок..."
-            required/>
+            required
+          />
         </div>
 
         <div class="form-group">
@@ -42,7 +57,8 @@
             id="noteContent"
             placeholder="Введите содержание..."
             rows="4"
-            required></textarea>
+            required
+          ></textarea>
         </div>
 
         <div class="form-group">
@@ -60,10 +76,16 @@
         </div>
       </div>
 
+      <!-- Контейнер для заметок -->
       <div id="notesContainer" class="notes-container">
+        <p class="no-notes">Заметок пока нет</p>
       </div>
+
       <footer class="footer">
+        <p>Note App by Шуляковская, Глазунова & Гатцинова</p>
       </footer>
     </div>
+
+    <script src="app.js"></script>
   </body>
 </html>
