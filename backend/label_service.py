@@ -1,6 +1,5 @@
 import json
 import os
-#from models.label import Label
 from datetime import datetime
 from models.note import Note, NoteStatus
 from flask import Flask, jsonify, request
@@ -85,4 +84,5 @@ class LabelService:
         """Удалить метку"""
         self.labels = [label for label in self.labels if label['id'] != label_id]
         self._save_labels()
+
         return True
