@@ -19,7 +19,7 @@ class NoteService:
                     data = json.load(f)
                     notes = []
                     for note_data in data:
-                        # Создаем заметку из данных JSON
+                        
                         note = Note(
                             id=note_data['id'],
                             title=note_data['title'],
@@ -72,8 +72,6 @@ class NoteService:
         for key, value in kwargs.items():
             if value is not None and hasattr(note, key):
                 setattr(note, key, value)
-        
-        # Обновляем updated_at
         note.updated_at = datetime.now().isoformat()
         self._save_notes()
         return note.to_dict()
@@ -87,4 +85,5 @@ class NoteService:
             if label_name in note.labels:
                 note.labels.remove(label_name)
                 note.updated_at = datetime.now().isoformat()
+
         self._save_notes()
